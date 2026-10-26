@@ -150,3 +150,240 @@
                 <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
                     <span><i class="fa-solid fa-list me-1 text-primary"></i> Station Stalls List</span>
                 </div>
+                <div class="card-body">
+<div id="stationsContainer">
+<div class="text-center text-muted py-4">
+No stations added yet. Start by setting up a station on the left.
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- JavaScript Logic -->
+<script>
+// Data Storage
+let stations = [];
+let stalls = [];
+
+// DOM Elements
+const stationForm = document.getElementById('stationForm');
+const stallForm = document.getElementById('stallForm');
+const selectStation = document.getElementById('selectStation');
+const stationsContainer = document.getElementById('stationsContainer');
+
+const dashTotalStalls = document.getElementById('dashTotalStalls');
+const dashAvailable = document.getElementById('dashAvailable');
+const dashNotAvailable = document.getElementById('dashNotAvailable');
+
+// 1. Handle Station Submission
+stationForm.addEventListener('submit', function(e) {
+e.preventDefault();
+
+const nameInput = document.getElementById('stationName');
+const capacityInput = document.getElementById('stationCapacity');
+
+const name = nameInput.value.trim();
+const capacity = parseInt(capacityInput.value);
+
+// Validation: Check if station name already exists
+const exists = stations.some(s => s.name.toLowerCase() === name.toLowerCase());
+if(exists) {
+alert('A station with this name already exists!');
+return;
+}
+
+const newStation = {
+id: Date.now(),
+name: name,
+capacity: capacity
+};
+
+stations.push(newStation);
+
+// Reset form properly
+stationForm.reset();
+
+// Update UI
+updateDropdown();
+renderData();
+});
+
+// 2. Handle Stall Status Submission
+stallForm.addEventListener('submit', function(e) {
+e.preventDefault();
+
+const stationId = parseInt(selectStation.value);
+const number = document.getElementById('stallNumber').value.trim();
+const status = document.getElementById('stallStatus').value;
+
+if (!stationId) {
+alert('Please select a station first.');
+return;
+}
+
+const targetStation = stations.find(s => s.id === stationId);
+if (!targetStation) return;
+
+// Check current stalls registered in this station
+const stationStalls = stalls.filter(s => s.stationId === stationId);
+const existingStallIndex = stationStalls.findIndex(s => s.number.toLowerCase() === number.toLowerCase());
+
+// If it's a new stall and capacity is reached
+if (existingStallIndex === -1 && stationStalls.length >= targetStation.capacity) {
+alert(`${targetStation.name} has reached its capacity limit of ${targetStation.capacity} stalls.`);
+return;
+}
+
+if (existingStallIndex > -1) {
+// Update status if stall number already exists in this station
+const actualIndex = stalls.findIndex(s => s.stationId === stationId && s.number.toLowerCase() === number.toLowerCase());
+stalls[actualIndex].status = status;
+} else {
+// Add new stall record
+stalls.push({
+id: Date.now(),
+stationId: stationId,
+number: number,
+status: status
+});
+}
+
+stallForm.reset();
+renderData();
+});
+
+// Update Dropdown List for Stations
+function updateDropdown() {
+selectStation.innerHTML = '<option value="">-- Choose a Station --</option>';
+stations.forEach(station => {
+const option = document.createElement('option');
+option.value = station.id;
+option.textContent = `${station.name} (Capacity: ${station.capacity})`;
+selectStation.appendChild(option);
+});
+}
+
+// Delete Stall
+window.deleteStall = function(id) {
+stalls = stalls.filter(s => s.id !== id);
+renderData();
+}
+
+// Delete Station
+window.deleteStation = function(id) {
+if(confirm("Are you sure you want to delete this station along with its registered stalls?")) {
+stations = stations.filter(s => s.id !== id);
+stalls = stalls.filter(s => s.stationId !== id);
+updateDropdown();
+renderData();
+}
+}
+ // Render Data and Update Dashboard
+function renderData() {
+// Dashboard Totals (Total Capacity of all Stations)
+let totalCapacity = stations.reduce((acc, curr) => acc + curr.capacity, 0);
+let availableCount = stalls.filter(s => s.status === 'Available').length;
+let notAvailableCount = stalls.filter(s => s.status === 'Not Available').length;
+
+dashTotalStalls.textContent = totalCapacity;
+dashAvailable.textContent = availableCount;
+dashNotAvailable.textContent = notAvailableCount;
+
+if (stations.length === 0) {
+stationsContainer.innerHTML = `
+<div class="text-center text-muted py-4">
+No stations added yet. Start by setting up a station on the left.
+</div>`;
+return;
+}
+
+stationsContainer.innerHTML = '';
+
+stations.forEach(station => {
+const stationStalls = stalls.filter(s => s.stationId === station.id);
+const stationAvailable = stationStalls.filter(s => s.status === 'Available').length;
+const stationNotAvailable = stationStalls.filter(s => s.status === 'Not Available').length;
+const unrecorded = station.capacity - stationStalls.length;
+
+let tableRows = '';
+if (stationStalls.length === 0) {
+tableRows = `<tr><td colspan="3" class="text-center text-muted small">No stall statuses recorded for this station yet.</td></tr>`;
+} else {
+stationStalls.forEach(stall => {
+const badgeClass = stall.status === 'Available' ? 'badge-available' : 'badge-not-available';
+tableRows += `
+<tr>
+<td><strong>${stall.number}</strong></td>
+<td><span class="badge ${badgeClass}">${stall.status}</span></td>
+<td class="text-end">
+<button onclick="deleteStall(${stall.id})" class="btn btn-sm btn-outline-danger py-0 px-1" title="Delete">
+<i class="fa-solid fa-trash"></i>
+</button>
+</td>
+</tr>
+`;
+});
+}
+
+const stationHTML = `
+<div class="card mb-3 station-box shadow-sm">
+<div class="card-body">
+<div class="d-flex justify-content-between align-items-center mb-2">
+<h5 class="fw-bold mb-0 text-dark">${station.name}</h5>
+<button onclick="deleteStation(${station.id})" class="btn btn-sm btn-outline-danger">
+<i class="fa-solid fa-trash me-1"></i> Delete Station
+</button>
+</div>
+<div class="row text-center mb-3 g-1">
+<div class="col-3">
+<div class="p-2 bg-light rounded">
+<small class="text-muted d-block">Capacity</small>
+<span class="fw-bold">${station.capacity}</span>
+</div>
+</div>
+<div class="col-3">
+<div class="p-2 bg-light rounded">
+<small class="text-success d-block">Available</small>
+<span class="fw-bold text-success">${stationAvailable}</span>
+</div>
+</div>
+<div class="col-3">
+<div class="p-2 bg-light rounded">
+<small class="text-danger d-block">Not Avail.</small>
+<span class="fw-bold text-danger">${stationNotAvailable}</span>
+</div>
+</div>
+<div class="col-3">
+<div class="p-2 bg-light rounded">
+<small class="text-secondary d-block">Unset</small>
+<span class="fw-bold text-secondary">${unrecorded > 0 ? unrecorded : 0}</span>
+</div>
+</div>
+</div>
+<div class="table-responsive">
+<table class="table table-sm table-hover align-middle mb-0">
+<thead>
+<tr>
+<th>Stall No.</th>
+<th>Status</th>
+<th class="text-end">Action</th>
+</tr>
+</thead>
+<tbody>
+${tableRows}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+`;
+stationsContainer.innerHTML += stationHTML;
+});
+}
+</script>
+
+</body>
+</html>   
