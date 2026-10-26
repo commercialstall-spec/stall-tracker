@@ -1,156 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stall Tracker System</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f4f6f9;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .stat-card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        .card-title-custom {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-        .bg-gradient-primary { background: linear-gradient(45deg, #4e73df, #224abe); color: white; }
-        .bg-gradient-success { background: linear-gradient(45deg, #1cc88a, #13855c); color: white; }
-        .bg-gradient-danger { background: linear-gradient(45deg, #e74a3b, #be2617); color: white; }
-        .badge-available { background-color: #1cc88a; }
-        .badge-not-available { background-color: #e74a3b; }
-        .station-box {
-            border-top: 4px solid #4e73df;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stall Tracker System</title>
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- FontAwesome Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+body {
+background-color: #f4f6f9;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.stat-card {
+border: none;
+border-radius: 12px;
+box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+transition: transform 0.2s;
+}
+.stat-card:hover {
+transform: translateY(-5px);
+}
+.card-title-custom {
+font-size: 0.9rem;
+text-transform: uppercase;
+letter-spacing: 1px;
+font-weight: 600;
+}
+.bg-gradient-primary { background: linear-gradient(45deg, #4e73df, #224abe); color: white; }
+.bg-gradient-success { background: linear-gradient(45deg, #1cc88a, #13855c); color: white; }
+.bg-gradient-danger { background: linear-gradient(45deg, #e74a3b, #be2617); color: white; }
+.badge-available { background-color: #1cc88a; }
+.badge-not-available { background-color: #e74a3b; }
+.station-box {
+border-top: 4px solid #4e73df;
+}
+</style>
 </head>
 <body class="py-4">
 
 <div class="container">
-    <h2 class="mb-4 text-center fw-bold text-primary">
-        <i class="fa-solid fa-store me-2"></i>Commercial Stall Tracker System
-    </h2>
+<h2 class="mb-4 text-center fw-bold text-primary">
+<i class="fa-solid fa-store me-2"></i>Commercial Stall Tracker System
+</h2>
 
-    <!-- DASHBOARD SUMMARY -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card stat-card bg-gradient-primary">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="card-title-custom opacity-75">Total Stalls (Capacity)</div>
-                            <h2 class="mb-0 fw-bold" id="dashTotalStalls">0</h2>
-                        </div>
-                        <i class="fa-solid fa-shop fa-3x opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card stat-card bg-gradient-success">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="card-title-custom opacity-75">Available Stalls</div>
-                            <h2 class="mb-0 fw-bold" id="dashAvailable">0</h2>
-                        </div>
-                        <i class="fa-solid fa-circle-check fa-3x opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card stat-card bg-gradient-danger">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="card-title-custom opacity-75">Not Available Stalls</div>
-                            <h2 class="mb-0 fw-bold" id="dashNotAvailable">0</h2>
-                        </div>
-                        <i class="fa-solid fa-circle-xmark fa-3x opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- DASHBOARD FILTER -->
+<div class="card shadow-sm mb-3">
+<div class="card-body py-2">
+<div class="row align-items-center">
+<div class="col-md-4 fw-bold text-secondary">
+<i class="fa-solid fa-filter me-1"></i> Filter Dashboard View:
+</div>
+<div class="col-md-8">
+<select id="dashboardFilter" class="form-select form-select-sm" onchange="renderData()">
+<option value="all">All Stations (Overall Summary)</option>
+</select>
+</div>
+</div>
+</div>
+</div>
 
-    <div class="row g-4">
-        <!-- FORM 1: SETUP STATION -->
-        <div class="col-md-5">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-white fw-bold">
-                    <i class="fa-solid fa-plus-circle me-1 text-primary"></i> 1. Setup Station
-                </div>
-                <div class="card-body">
-                    <form id="stationForm">
-                        <div class="mb-3">
-                            <label class="form-label">Station Name</label>
-                            <input type="text" id="stationName" class="form-control" placeholder="e.g., Station 1 (Main)" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Total Commercial Spaces (Capacity)</label>
-                            <input type="number" id="stationCapacity" class="form-control" min="1" placeholder="e.g., 10" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="fa-solid fa-save me-1"></i> Save Station
-                        </button>
-                    </form>
-                </div>
-            </div>
+<!-- DASHBOARD SUMMARY -->
+<div class="row g-3 mb-4">
+<div class="col-md-4">
+<div class="card stat-card bg-gradient-primary">
+<div class="card-body">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="card-title-custom opacity-75">Total Stalls (Capacity)</div>
+<h2 class="mb-0 fw-bold" id="dashTotalStalls">0</h2>
+</div>
+<i class="fa-solid fa-shop fa-3x opacity-50"></i>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="card stat-card bg-gradient-success">
+<div class="card-body">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="card-title-custom opacity-75">Available Stalls</div>
+<h2 class="mb-0 fw-bold" id="dashAvailable">0</h2>
+</div>
+<i class="fa-solid fa-circle-check fa-3x opacity-50"></i>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="card stat-card bg-gradient-danger">
+<div class="card-body">
+<div class="d-flex justify-content-between align-items-center">
+<div>
+<div class="card-title-custom opacity-75">Not Available Stalls</div>
+<h2 class="mb-0 fw-bold" id="dashNotAvailable">0</h2>
+</div>
+<i class="fa-solid fa-circle-xmark fa-3x opacity-50"></i>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-            <!-- FORM 2: UPDATE STALL STATUS -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-white fw-bold">
-                    <i class="fa-solid fa-pen-to-square me-1 text-primary"></i> 2. Record Stall Status
-                </div>
-                <div class="card-body">
-                    <form id="stallForm">
-                        <div class="mb-3">
-                            <label class="form-label">Select Station</label>
-                            <select id="selectStation" class="form-select" required>
-                                <option value="">-- Choose a Station --</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Stall Number / Code</label>
-                            <input type="text" id="stallNumber" class="form-control" placeholder="e.g., Stall-A1" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Stall Status</label>
-                            <select id="stallStatus" class="form-select" required>
-                                <option value="Available">Available</option>
-                                <option value="Not Available">Not Available</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">
-                            <i class="fa-solid fa-check me-1"></i> Record Stall Status
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+<div class="row g-4">
+<!-- FORM 1: SETUP STATION -->
+<div class="col-md-5">
+<div class="card shadow-sm mb-4">
+<div class="card-header bg-white fw-bold">
+<i class="fa-solid fa-plus-circle me-1 text-primary"></i> 1. Setup Station
+</div>
+<div class="card-body">
+<form id="stationForm">
+<div class="mb-3">
+<label class="form-label">Station Name</label>
+<input type="text" id="stationName" class="form-control" placeholder="e.g., Station 1 (Main)" required>
+</div>
+<div class="mb-3">
+<label class="form-label">Total Commercial Spaces (Capacity)</label>
+<input type="number" id="stationCapacity" class="form-control" min="1" placeholder="e.g., 10" required>
+</div>
+<button type="submit" class="btn btn-primary w-100">
+<i class="fa-solid fa-save me-1"></i> Save Station
+</button>
+</form>
+</div>
+</div>
 
-        <!-- STATIONS OVERVIEW AND STALL LIST -->
-        <div class="col-md-7">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
-                    <span><i class="fa-solid fa-list me-1 text-primary"></i> Station Stalls List</span>
-                </div>
-                <div class="card-body">
+<!-- FORM 2: UPDATE STALL STATUS -->
+<div class="card shadow-sm">
+<div class="card-header bg-white fw-bold">
+<i class="fa-solid fa-pen-to-square me-1 text-primary"></i> 2. Record Stall Status
+</div>
+<div class="card-body">
+<form id="stallForm">
+<div class="mb-3">
+<label class="form-label">Select Station</label>
+<select id="selectStation" class="form-select" required>
+<option value="">-- Choose a Station --</option>
+</select>
+</div>
+<div class="mb-3">
+<label class="form-label">Stall Number / Code</label>
+<input type="text" id="stallNumber" class="form-control" placeholder="e.g., Stall-A1" required>
+</div>
+<div class="mb-3">
+<label class="form-label">Stall Status</label>
+<select id="stallStatus" class="form-select" required>
+<option value="Available">Available</option>
+<option value="Not Available">Not Available</option>
+</select>
+</div>
+<button type="submit" class="btn btn-success w-100">
+<i class="fa-solid fa-check me-1"></i> Record Stall Status
+</button>
+</form>
+</div>
+</div>
+</div>
+
+<!-- STATIONS OVERVIEW AND STALL LIST -->
+<div class="col-md-7">
+<div class="card shadow-sm mb-4">
+<div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
+<span><i class="fa-solid fa-list me-1 text-primary"></i> Station Stalls List</span>
+</div>
+<div class="card-body">
 <div id="stationsContainer">
 <div class="text-center text-muted py-4">
 No stations added yet. Start by setting up a station on the left.
@@ -172,6 +188,7 @@ let stalls = [];
 const stationForm = document.getElementById('stationForm');
 const stallForm = document.getElementById('stallForm');
 const selectStation = document.getElementById('selectStation');
+const dashboardFilter = document.getElementById('dashboardFilter');
 const stationsContainer = document.getElementById('stationsContainer');
 
 const dashTotalStalls = document.getElementById('dashTotalStalls');
@@ -188,7 +205,6 @@ const capacityInput = document.getElementById('stationCapacity');
 const name = nameInput.value.trim();
 const capacity = parseInt(capacityInput.value);
 
-// Validation: Check if station name already exists
 const exists = stations.some(s => s.name.toLowerCase() === name.toLowerCase());
 if(exists) {
 alert('A station with this name already exists!');
@@ -202,12 +218,9 @@ capacity: capacity
 };
 
 stations.push(newStation);
-
-// Reset form properly
 stationForm.reset();
 
-// Update UI
-updateDropdown();
+updateDropdowns();
 renderData();
 });
 
@@ -227,22 +240,18 @@ return;
 const targetStation = stations.find(s => s.id === stationId);
 if (!targetStation) return;
 
-// Check current stalls registered in this station
 const stationStalls = stalls.filter(s => s.stationId === stationId);
 const existingStallIndex = stationStalls.findIndex(s => s.number.toLowerCase() === number.toLowerCase());
 
-// If it's a new stall and capacity is reached
 if (existingStallIndex === -1 && stationStalls.length >= targetStation.capacity) {
 alert(`${targetStation.name} has reached its capacity limit of ${targetStation.capacity} stalls.`);
 return;
 }
 
 if (existingStallIndex > -1) {
-// Update status if stall number already exists in this station
 const actualIndex = stalls.findIndex(s => s.stationId === stationId && s.number.toLowerCase() === number.toLowerCase());
 stalls[actualIndex].status = status;
 } else {
-// Add new stall record
 stalls.push({
 id: Date.now(),
 stationId: stationId,
@@ -255,15 +264,32 @@ stallForm.reset();
 renderData();
 });
 
-// Update Dropdown List for Stations
-function updateDropdown() {
+// Update Dropdown Lists for Stations (Form select & Dashboard Filter)
+function updateDropdowns() {
+// Keep current selected value of dashboard filter if possible
+const currentFilterVal = dashboardFilter.value;
+
 selectStation.innerHTML = '<option value="">-- Choose a Station --</option>';
+dashboardFilter.innerHTML = '<option value="all">All Stations (Overall Summary)</option>';
+
 stations.forEach(station => {
-const option = document.createElement('option');
-option.value = station.id;
-option.textContent = `${station.name} (Capacity: ${station.capacity})`;
-selectStation.appendChild(option);
+// Populate form dropdown
+const option1 = document.createElement('option');
+option1.value = station.id;
+option1.textContent = `${station.name} (Capacity: ${station.capacity})`;
+selectStation.appendChild(option1);
+
+// Populate dashboard filter dropdown
+const option2 = document.createElement('option');
+option2.value = station.id;
+option2.textContent = station.name;
+dashboardFilter.appendChild(option2);
 });
+
+// Restore filter selection
+if ([...dashboardFilter.options].some(o => o.value === currentFilterVal)) {
+dashboardFilter.value = currentFilterVal;
+}
 }
 
 // Delete Stall
@@ -277,16 +303,30 @@ window.deleteStation = function(id) {
 if(confirm("Are you sure you want to delete this station along with its registered stalls?")) {
 stations = stations.filter(s => s.id !== id);
 stalls = stalls.filter(s => s.stationId !== id);
-updateDropdown();
+updateDropdowns();
 renderData();
 }
 }
- // Render Data and Update Dashboard
+
+// Render Data and Update Dashboard based on Filter
 function renderData() {
-// Dashboard Totals (Total Capacity of all Stations)
-let totalCapacity = stations.reduce((acc, curr) => acc + curr.capacity, 0);
-let availableCount = stalls.filter(s => s.status === 'Available').length;
-let notAvailableCount = stalls.filter(s => s.status === 'Not Available').length;
+const selectedFilter = dashboardFilter.value;
+let targetStations = [];
+let targetStalls = [];
+
+if (selectedFilter === 'all') {
+targetStations = stations;
+targetStalls = stalls;
+} else {
+const filterId = parseInt(selectedFilter);
+targetStations = stations.filter(s => s.id === filterId);
+targetStalls = stalls.filter(s => s.stationId === filterId);
+}
+
+// Calculate Totals based on filtered scope
+let totalCapacity = targetStations.reduce((acc, curr) => acc + curr.capacity, 0);
+let availableCount = targetStalls.filter(s => s.status === 'Available').length;
+let notAvailableCount = targetStalls.filter(s => s.status === 'Not Available').length;
 
 dashTotalStalls.textContent = totalCapacity;
 dashAvailable.textContent = availableCount;
@@ -386,4 +426,4 @@ stationsContainer.innerHTML += stationHTML;
 </script>
 
 </body>
-</html>   
+</html>
