@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,7 +52,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="card-title-custom opacity-75">Kabuuan ng Stalls (Total)</div>
+                            <div class="card-title-custom opacity-75">Total Stalls (Capacity)</div>
                             <h2 class="mb-0 fw-bold" id="dashTotalStalls">0</h2>
                         </div>
                         <i class="fa-solid fa-shop fa-3x opacity-50"></i>
@@ -65,7 +65,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="card-title-custom opacity-75">Bilang ng Available</div>
+                            <div class="card-title-custom opacity-75">Available Stalls</div>
                             <h2 class="mb-0 fw-bold" id="dashAvailable">0</h2>
                         </div>
                         <i class="fa-solid fa-circle-check fa-3x opacity-50"></i>
@@ -78,7 +78,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <div class="card-title-custom opacity-75">Bilang ng Not Available</div>
+                            <div class="card-title-custom opacity-75">Not Available Stalls</div>
                             <h2 class="mb-0 fw-bold" id="dashNotAvailable">0</h2>
                         </div>
                         <i class="fa-solid fa-circle-xmark fa-3x opacity-50"></i>
@@ -93,20 +93,20 @@
         <div class="col-md-5">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white fw-bold">
-                    <i class="fa-solid fa-plus-circle me-1 text-primary"></i> 1. Magdagdag / Mag-setup ng Station
+                    <i class="fa-solid fa-plus-circle me-1 text-primary"></i> 1. Setup Station
                 </div>
                 <div class="card-body">
                     <form id="stationForm">
                         <div class="mb-3">
-                            <label class="form-label">Pangalan ng Station</label>
-                            <input type="text" id="stationName" class="form-control" placeholder="Halimbawa: Station 1 (Main)" required>
+                            <label class="form-label">Station Name</label>
+                            <input type="text" id="stationName" class="form-control" placeholder="e.g., Station 1 (Main)" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Kabuuan ng Commercial Spaces (Capacity)</label>
-                            <input type="number" id="stationCapacity" class="form-control" min="1" placeholder="Halimbawa: 10" required>
+                            <label class="form-label">Total Commercial Spaces (Capacity)</label>
+                            <input type="number" id="stationCapacity" class="form-control" min="1" placeholder="e.g., 10" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="fa-solid fa-save me-1"></i> I-save ang Station
+                            <i class="fa-solid fa-save me-1"></i> Save Station
                         </button>
                     </form>
                 </div>
@@ -115,29 +115,29 @@
             <!-- FORM 2: UPDATE STALL STATUS -->
             <div class="card shadow-sm">
                 <div class="card-header bg-white fw-bold">
-                    <i class="fa-solid fa-pen-to-square me-1 text-primary"></i> 2. Mag-set ng Status ng Stall
+                    <i class="fa-solid fa-pen-to-square me-1 text-primary"></i> 2. Record Stall Status
                 </div>
                 <div class="card-body">
                     <form id="stallForm">
                         <div class="mb-3">
-                            <label class="form-label">Pumili ng Station</label>
+                            <label class="form-label">Select Station</label>
                             <select id="selectStation" class="form-select" required>
-                                <option value="">-- Pumili ng Station --</option>
+                                <option value="">-- Choose a Station --</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Stall Number / Code</label>
-                            <input type="text" id="stallNumber" class="form-control" placeholder="Halimbawa: Stall-A1" required>
+                            <input type="text" id="stallNumber" class="form-control" placeholder="e.g., Stall-A1" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Status ng Stall</label>
+                            <label class="form-label">Stall Status</label>
                             <select id="stallStatus" class="form-select" required>
                                 <option value="Available">Available</option>
                                 <option value="Not Available">Not Available</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-success w-100">
-                            <i class="fa-solid fa-check me-1"></i> I-record ang Stall Status
+                            <i class="fa-solid fa-check me-1"></i> Record Stall Status
                         </button>
                     </form>
                 </div>
@@ -148,4 +148,5 @@
         <div class="col-md-7">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
-                    <span><i class="fa-solid fa-list me-1
+                    <span><i class="fa-solid fa-list me-1 text-primary"></i> Station Stalls List</span>
+                </div>
